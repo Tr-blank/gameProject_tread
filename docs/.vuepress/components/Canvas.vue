@@ -42,7 +42,7 @@ export default {
     let xLength = 10;
     // 地雷位置亂數
     let randomArray =[];
-    for(let i=0;i<1;i++){
+    for(let i=0;i<5;i++){
       let number = Math.floor(Math.random()*50);
       randomArray.push(number);
      }
