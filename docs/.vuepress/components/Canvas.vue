@@ -3,7 +3,6 @@
 </template>
 
 <script>
-import PIXI from 'pixi.js'
 
 export default {
   created() {
@@ -45,7 +44,7 @@ export default {
 
     // 地雷位置亂數
     let randomArray =[];
-    for(let i=0;i<10;i++){
+    for(let i=0;i<5;i++){
       let number = Math.floor(Math.random()*maxfloor);
       randomArray.push(number);
      }
