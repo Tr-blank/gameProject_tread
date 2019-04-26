@@ -1,6 +1,4 @@
----
-title: Blogging Like a Hacker
----
+
 # 練習 - 踩地雷
 
 ## branch 規範
