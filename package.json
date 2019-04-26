@@ -1,0 +1,19 @@
+{
+  "name": "gameproject_tread",
+  "version": "1.0.0",
+  "description": "--- title: Blogging Like a Hacker ---",
+  "main": "index.js",
+  "directories": {
+    "doc": "docs"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "vuepress dev docs",
+    "build": "vuepress build docs"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "pixi.js": "^4.8.7"
+  }
+}
