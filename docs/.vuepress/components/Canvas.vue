@@ -3,6 +3,7 @@
 </template>
 
 <script>
+import PIXI from 'pixi.js'
 
 export default {
   created() {

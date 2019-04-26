@@ -23,5 +23,10 @@ git clone https://github.com/Tr-blank/gameProject_tread.git
 npm run dev
 ```
 
+## 待開發
+- github page demo
+- 取得點擊位置
+- 判斷空地區域
+- 蓋板隱藏
 
 
