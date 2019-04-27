@@ -3,7 +3,6 @@
 </template>
 
 <script>
-import PIXI from 'pixi.js'
 
 export default {
   created() {
@@ -25,8 +24,8 @@ export default {
     message.x = 10;
     message.y = 10;
     stage.addChild(message);
-    console.log('123');
-
+    console.log('123456789');
+    console.log('123456789');
 
 
 
