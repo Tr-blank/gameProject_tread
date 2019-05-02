@@ -4,17 +4,14 @@
 
 <script>
 
-export default {
-  data() {
-    return {
-      floorCheckList : [],
-      safeArea:[],
-      floorData :[],
-      maxfloor : 80,
-      xLength:10
-    }
-  },
-  created() {
+
+    let floorCheckList = []
+    let safeArea = []
+    let floorData  = []
+    let maxfloor  =  80
+    let xLength = 10
+    let safeFloors = []
+
     //setup Pixi renderer
     var renderer = PIXI.autoDetectRenderer(window.innerWidth, window.innerHeight-3, {
         backgroundColor: 0xeeeeee
@@ -39,119 +36,136 @@ export default {
 
     let y = 0;  
     let x = 0;
-    this.floorData = new Array(this.maxfloor);
+    floorData = new Array(maxfloor);
     // 初始化地圖資訊
-    for(let i =0 ;i<this.maxfloor;i++){
-      this.floorData[i] = {
+    for(let i =0 ;i<maxfloor;i++){
+      floorData[i] = {
         'id':0,
         'text':0,
         'event':false,
         'safeAreaID':0 
       };
     }
-    // console.log(this.floorData);
+    // console.log(floorData);
 
     // 產生亂數地雷位置
     let randomArray =[];
     for(let i=0;i<10;i++){
-      let number = Math.floor(Math.random()*this.maxfloor);
+      let number = Math.floor(Math.random()*maxfloor);
       randomArray.push(number);
      }
     console.log(randomArray);
-    let safeFloors = []
-    for(let i =0 ;i<this.maxfloor;i++){
+    
+    for(let i =0 ;i<maxfloor;i++){
         x++;  
-        if(i % this.xLength ==0){
+        if(i % xLength ==0){
             y++;
             x=0;
         }
         
-        this.floorData[i].id = i;
-        this.floorData[i].xSite= 10+42*x;
-        this.floorData[i].ySite= 100+42*y;
-        this.floorData[i].event = randomArray.some(e => e == i);
-        this.floorData[i].block = new PIXI.Graphics();
+        floorData[i].id = i;
+        floorData[i].xSite= 10+42*x;
+        floorData[i].ySite= 100+42*y;
+        floorData[i].event = randomArray.some(e => e == i);
+        floorData[i].block = new PIXI.Graphics();
+
+
         // 長方形
 
-        if(!this.floorData[i].event){
+        if(!floorData[i].event){
           // 沒有地雷
-          this.floorData[i].block.beginFill(0xDE3249);  
+          floorData[i].block.beginFill(0xDE3249);  
         }else{
           // 有地雷
-          this.floorData[i].block.beginFill(0x1099bb);
-          // console.log(this.floorData[i+1]);
+          floorData[i].block.beginFill(0x1099bb);
+          // console.log(floorData[i+1]);
           // 地雷周邊地區提示數字＋１
-          if(i % this.xLength == 0 && i < this.xLength){
-            if(i+1 < this.maxfloor){this.floorData[i+1].text++};
-            if(i+this.xLength < this.maxfloor){this.floorData[i+this.xLength].text++};
-            if(i+this.xLength+1 < this.maxfloor ){this.floorData[i+this.xLength+1].text++};            
-          }else if(i % this.xLength == 0 && i > this.maxfloor - this.xLength){
-            if(i+1 < this.maxfloor){this.floorData[i+1].text++};
-            if(i-this.xLength >= 0){this.floorData[i-this.xLength].text++};
-            if(i-this.xLength+1 >= 0 ){this.floorData[i-this.xLength+1].text++};
-          }else if(i % this.xLength == this.xLength-1 && i < this.xLength){
-            if(i-1 >= 0){this.floorData[i-1].text++};
-            if(i+this.xLength < this.maxfloor){this.floorData[i+this.xLength].text++};
-            if(i+this.xLength-1 < this.maxfloor ){this.floorData[i+this.xLength-1].text++};          
-          }else if(i % this.xLength == this.xLength-1 && i > this.maxfloor - this.xLength){
-            if(i-1 >= 0){this.floorData[i-1].text++};
-            if(i-this.xLength >= 0){this.floorData[i-this.xLength].text++};
-            if(i-this.xLength-1 >= 0 ){this.floorData[i-this.xLength-1].text++};
-          }else if(i % this.xLength == 0){
-            if(i+1 < this.maxfloor){this.floorData[i+1].text++};
-            if(i-this.xLength >= 0){this.floorData[i-this.xLength].text++};
-            if(i-this.xLength+1 >= 0 ){this.floorData[i-this.xLength+1].text++};
-            if(i+this.xLength < this.maxfloor){this.floorData[i+this.xLength].text++};
-            if(i+this.xLength+1 < this.maxfloor ){this.floorData[i+this.xLength+1].text++};
-          }else if(i % this.xLength == this.xLength-1){
-            if(i-1 >= 0){this.floorData[i-1].text++};
-            if(i-this.xLength >= 0){this.floorData[i-this.xLength].text++};
-            if(i-this.xLength-1 >= 0 ){this.floorData[i-this.xLength-1].text++};
-            if(i+this.xLength < this.maxfloor){this.floorData[i+this.xLength].text++};
-            if(i+this.xLength-1 < this.maxfloor ){this.floorData[i+this.xLength-1].text++};
-          }else if(i < this.xLength){
-            if(i-1 >= 0){this.floorData[i-1].text++};
-            if(i+1 < this.maxfloor){this.floorData[i+1].text++};
-            if(i+this.xLength < this.maxfloor){this.floorData[i+this.xLength].text++};
-            if(i+this.xLength-1 < this.maxfloor ){this.floorData[i+this.xLength-1].text++};
-            if(i+this.xLength+1 < this.maxfloor ){this.floorData[i+this.xLength+1].text++};
-          }else if(i > this.maxfloor - this.xLength){
-            if(i-1 >= 0){this.floorData[i-1].text++};
-            if(i+1 < this.maxfloor){this.floorData[i+1].text++};
-            if(i-this.xLength >= 0){this.floorData[i-this.xLength].text++};
-            if(i-this.xLength-1 >= 0 ){this.floorData[i-this.xLength-1].text++};
-            if(i-this.xLength+1 >= 0 ){this.floorData[i-this.xLength+1].text++};
+          if(i % xLength == 0 && i < xLength){
+            if(i+1 < maxfloor){floorData[i+1].text++};
+            if(i+xLength < maxfloor){floorData[i+xLength].text++};
+            if(i+xLength+1 < maxfloor ){floorData[i+xLength+1].text++};            
+          }else if(i % xLength == 0 && i > maxfloor - xLength){
+            if(i+1 < maxfloor){floorData[i+1].text++};
+            if(i-xLength >= 0){floorData[i-xLength].text++};
+            if(i-xLength+1 >= 0 ){floorData[i-xLength+1].text++};
+          }else if(i % xLength == xLength-1 && i < xLength){
+            if(i-1 >= 0){floorData[i-1].text++};
+            if(i+xLength < maxfloor){floorData[i+xLength].text++};
+            if(i+xLength-1 < maxfloor ){floorData[i+xLength-1].text++};          
+          }else if(i % xLength == xLength-1 && i > maxfloor - xLength){
+            if(i-1 >= 0){floorData[i-1].text++};
+            if(i-xLength >= 0){floorData[i-xLength].text++};
+            if(i-xLength-1 >= 0 ){floorData[i-xLength-1].text++};
+          }else if(i % xLength == 0){
+            if(i+1 < maxfloor){floorData[i+1].text++};
+            if(i-xLength >= 0){floorData[i-xLength].text++};
+            if(i-xLength+1 >= 0 ){floorData[i-xLength+1].text++};
+            if(i+xLength < maxfloor){floorData[i+xLength].text++};
+            if(i+xLength+1 < maxfloor ){floorData[i+xLength+1].text++};
+          }else if(i % xLength == xLength-1){
+            if(i-1 >= 0){floorData[i-1].text++};
+            if(i-xLength >= 0){floorData[i-xLength].text++};
+            if(i-xLength-1 >= 0 ){floorData[i-xLength-1].text++};
+            if(i+xLength < maxfloor){floorData[i+xLength].text++};
+            if(i+xLength-1 < maxfloor ){floorData[i+xLength-1].text++};
+          }else if(i < xLength){
+            if(i-1 >= 0){floorData[i-1].text++};
+            if(i+1 < maxfloor){floorData[i+1].text++};
+            if(i+xLength < maxfloor){floorData[i+xLength].text++};
+            if(i+xLength-1 < maxfloor ){floorData[i+xLength-1].text++};
+            if(i+xLength+1 < maxfloor ){floorData[i+xLength+1].text++};
+          }else if(i > maxfloor - xLength){
+            if(i-1 >= 0){floorData[i-1].text++};
+            if(i+1 < maxfloor){floorData[i+1].text++};
+            if(i-xLength >= 0){floorData[i-xLength].text++};
+            if(i-xLength-1 >= 0 ){floorData[i-xLength-1].text++};
+            if(i-xLength+1 >= 0 ){floorData[i-xLength+1].text++};
           }else{
-            if(i-1 >= 0){this.floorData[i-1].text++};
-            if(i+1 < this.maxfloor){this.floorData[i+1].text++};
-            if(i-this.xLength >= 0){this.floorData[i-this.xLength].text++};
-            if(i-this.xLength-1 >= 0 ){this.floorData[i-this.xLength-1].text++};
-            if(i-this.xLength+1 >= 0 ){this.floorData[i-this.xLength+1].text++};
-            if(i+this.xLength < this.maxfloor){this.floorData[i+this.xLength].text++};
-            if(i+this.xLength-1 < this.maxfloor ){this.floorData[i+this.xLength-1].text++};
-            if(i+this.xLength+1 < this.maxfloor ){this.floorData[i+this.xLength+1].text++};
+            if(i-1 >= 0){floorData[i-1].text++};
+            if(i+1 < maxfloor){floorData[i+1].text++};
+            if(i-xLength >= 0){floorData[i-xLength].text++};
+            if(i-xLength-1 >= 0 ){floorData[i-xLength-1].text++};
+            if(i-xLength+1 >= 0 ){floorData[i-xLength+1].text++};
+            if(i+xLength < maxfloor){floorData[i+xLength].text++};
+            if(i+xLength-1 < maxfloor ){floorData[i+xLength-1].text++};
+            if(i+xLength+1 < maxfloor ){floorData[i+xLength+1].text++};
           }
         }
-        this.floorData[i].block.drawRect(this.floorData[i].xSite, this.floorData[i].ySite, 40, 40);
-        this.floorData[i].block.endFill();
-        this.floorData[i].block.buttonMode = true;
-        this.floorData[i].block.alpha = 0.5;
-        stage.addChild(this.floorData[i].block);
+        floorData[i].block.drawRect(floorData[i].xSite, floorData[i].ySite, 40, 40);
+        floorData[i].block.endFill();
+        floorData[i].block.buttonMode = true;
+        floorData[i].block.alpha = 0.5;
+        stage.addChild(floorData[i].block);
 
-        this.floorData[i].block.interactive = true;
+
+
+        floorData[i].block.interactive = true;
         // make circle non-transparent when mouse is over it
-        this.floorData[i].block.pointerdown = function(mouseData) {
+        floorData[i].block.pointerdown = function(mouseData) {
             this.alpha = 1;
-            console.log(this.floorData[i].id + '::' +this.floorData[i].text);
+            console.log(i)
+            console.log(floorData[i])
+            this.clear();   
+            // this.beginFill(0xFF0000);
+            // this.drawRect(floorData[i].xSite, floorData[i].ySite, 40, 40);
+            // this.endFill();
+            // sthis.tage.addChild(this);
+            renderer.render(stage);
+
+            // changeColor()
+            if(floorData[i].text == 0){
+              console.log(floorData[i].text)
+              checkRound(i)
+            }
         }
 
         // make circle half-transparent when mouse leaves
-        this.floorData[i].block.pointerup = function(mouseData) {
-            this.alpha = 0.5;
+        floorData[i].block.pointerup = function(mouseData) {
+            alpha = 0.5;
         }
     }
 
-    this.floorData.forEach((e,i) =>{
+    floorData.forEach((e,i) =>{
       if(e.text == 0 && !e.event){safeFloors.push(i)}
       if(!randomArray.some(e => e == i)){
         e.textBlock = new PIXI.Text(e.text);
@@ -161,61 +175,80 @@ export default {
       }
     });
     console.log(safeFloors)//安全的地板
-    console.log(this.floorData);
+    console.log(floorData);
 
-    this.safeArea.push(safeFloors[0])
-    this.checkRound(safeFloors[0])
+    // checkRound(safeFloors[0])
 
-    // this.floorCheckList.forEach(e => {
-    //   this.checkRound(e)
+    // floorCheckList.forEach(e => {
+    //   checkRound(e)
     // })
 
-    console.log('Area :: ' + this.safeArea)
-    console.log('check :: ' + this.floorCheckList)
+
     // start animating
     animate();
 
     function animate() {
-    requestAnimationFrame(animate);
-    // render the root container
-    renderer.render(stage);
+      requestAnimationFrame(animate);
+      // render the root container
+      renderer.render(stage);
+
+      function changeColor(){
+        console.log(floorData[0].block);
+      }
+
+
     };
-  },
-  methods: {
-    checkRound(floorNumber){ //檢查是否是安全區域
-      this.roundFloors(floorNumber).filter(e => e.text == 0 && !e.event).forEach(e => {
-        if(!this.safeArea.some(i => i == e.id)){
-          this.floorCheckList.push(e.id)
-          this.checkRound(e.id)
+
+  function checkRound(floorNumber){ //檢查是否是安全區域
+    safeArea.push(floorNumber)
+    console.log('Area :: ' + safeArea)
+
+    roundFloors(floorNumber).filter(e => e.text == 0 && !e.event).forEach(e => {
+      console.log('checkRoundFloor :: '+e.id);
+
+      if(!safeArea.some(i => i == e.id)){
+        console.log('checkFloor :: '+e.id);
+
+        console.log(' :: '+floorCheckList)
+        if(floorCheckList.some(i => i == e.id)){
+          // floorCheckList.splice(floorCheckList.indexOf(e.id), 1)
         }else{
-          this.safeArea.push(e.id)
-        }
-        if(this.floorCheckList.some(i => i == e.id)){
-          this.floorCheckList.splice(this.floorCheckList.indexOf(e.id), 1)
+          floorCheckList.push(e.id)
+          checkRound(e.id)
+          console.log('check :: ' + floorCheckList)
         }
 
-      })
-      
-    },
-    roundFloors(floorNumber){
-      // const Round = {
-      //   'leftRloor':this.floorData[floorNumber - 1],
-      //   'rightRloor':this.floorData[floorNumber + 1],
-      //   'topRloor':this.floorData[floorNumber - this.xLength],
-      //   'downRloor':this.floorData[floorNumber + this.xLength]
-      // }
-      let round = [];
-      if(floorNumber - 1 >= 0){round.push(this.floorData[floorNumber - 1])}
-      if(floorNumber + 1 < this.maxfloor){round.push(this.floorData[floorNumber + 1])}
-      if(floorNumber - this.xLength >= 0){round.push(this.floorData[floorNumber - this.xLength])}
-      if(floorNumber + this.xLength < this.maxfloor){round.push(this.floorData[floorNumber + this.xLength])}
-      return round
-    }
-},
-  computed: {
-
+      }
+    })     
   }
-}
+  function roundFloors(floorNumber){
+    // const Round = {
+    //   'leftRloor':this.floorData[floorNumber - 1],
+    //   'rightRloor':this.floorData[floorNumber + 1],
+    //   'topRloor':this.floorData[floorNumber - this.xLength],
+    //   'downRloor':this.floorData[floorNumber + this.xLength]
+    // }
+    let round = [];
+    if(floorNumber - 1 >= 0){round.push(floorData[floorNumber - 1])}
+    if(floorNumber + 1 < maxfloor){round.push(floorData[floorNumber + 1])}
+    if(floorNumber - xLength >= 0){round.push(floorData[floorNumber - xLength])}
+    if(floorNumber + xLength < maxfloor){round.push(floorData[floorNumber + xLength])}
+    return round
+  }
+
+
+  export default {
+    data() {
+      return {
+      }
+    },
+    created() {
+    },
+    methods: {
+    },
+    computed: {
+    }
+  }
 </script>
 
 <style lang="stylus">
